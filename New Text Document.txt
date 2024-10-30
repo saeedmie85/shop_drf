@@ -1,0 +1,1 @@
+https://github.com/F4R4N/shop-django-rest-framework/blob/main/api/urls.py
