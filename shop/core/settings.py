@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-*bfl#^a*$46tt1w1bfs-(&je@%5e+lwuew^-x^pu4wf6v-(%g#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # LIB
     "rest_framework",
-
-    #my apps
+    "rest_framework_simplejwt",
+    "rest_framework.authtoken",
+    "drf_spectacular",
+    # my apps
     "accounts.apps.AccountsConfig",
-    'extensions',
+    "extensions",
     "product.apps.ProductConfig",
 ]
 
@@ -129,8 +131,20 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-#new
+# new
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 AUTH_USER_MODEL = "accounts.User"
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}

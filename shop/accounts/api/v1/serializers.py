@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from blog.models import Post
 from rest_framework.response import Response
 
 # from accounts.models import User

@@ -1,4 +1,5 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from product.models import Category, Product, CartItem, Address, Order, OrderItem
 from .serializers import (
     CategorySerializer,
@@ -7,6 +8,7 @@ from .serializers import (
     AddressSerializer,
     OrderSerializer,
 )
+from .filters import ProductFilter, OrderFilter
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -19,6 +21,9 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = ProductFilter
+    ordering_fields = ["price", "name"]  # Optional: allows ordering by price or name
 
 
 class CartItemViewSet(viewsets.ModelViewSet):
@@ -43,6 +48,9 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = OrderFilter
+    ordering_fields = ["delivery_date", "total_price"]  # Optional ordering fields
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
