@@ -13,14 +13,6 @@ def product_image(instance, filename):
     return "images/{0}.jpg".format(instance.slug)
 
 
-class CommonField(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
 class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
@@ -44,10 +36,13 @@ class AvailableManager(models.Manager):
         )
 
 
-class Product(CommonField):
+class Product(models.Model):
     name = models.CharField(max_length=150, unique=True, null=False, blank=False)
     slug = models.SlugField(unique=True, null=False, blank=True)
-    category = models.ManyToManyField(Category, related_name="products")
+    category = models.ManyToManyField(
+        Category,
+        related_name="products",
+    )
     price = models.PositiveIntegerField()
     discount = models.PositiveIntegerField(default=0)
     is_available = models.BooleanField(default=True)
@@ -55,8 +50,10 @@ class Product(CommonField):
     quantity = models.PositiveIntegerField()
     objects = models.Manager()
     available = AvailableManager()
-    image = models.ImageField(upload_to=product_image)
+    image = models.ImageField(upload_to=product_image, null=True, blank=True)
     description = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -69,33 +66,48 @@ class Product(CommonField):
         super().save()
 
 
-class CartItem(CommonField):
+class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("created",)
 
     def __str__(self):
         return self.product.name
 
 
-class Address(CommonField):
+class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     city = models.CharField(max_length=50, null=True, blank=True)
     province = models.CharField(max_length=50, null=True, blank=True)
     street = models.CharField(max_length=50, null=True, blank=True)
     note = models.CharField(max_length=250, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("created",)
 
     def __str__(self):
         return f"{self.province}-{self.city}-{self.street}-{self.note}"
 
 
-class Order(CommonField):
+class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     address = models.ForeignKey(Address, on_delete=models.PROTECT)
     status = models.CharField(max_length=50, blank=True, default="register")
-    delivery_date = models.DateTimeField()
+    delivery_date = models.DateTimeField(null=True, blank=True)
     tracking_code = models.CharField(max_length=20)
     total_price = models.PositiveIntegerField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("created",)
 
 
 class OrderItem(models.Model):

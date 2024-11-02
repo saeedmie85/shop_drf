@@ -74,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class OtpCode(models.Model):
     phone_number = models.CharField(max_length=11)
-    code = models.PositiveIntegerField(max_length=4)
+    code = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now=True)
 
     def __str__(self):
