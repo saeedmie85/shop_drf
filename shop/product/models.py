@@ -102,7 +102,7 @@ class Order(models.Model):
     status = models.CharField(max_length=50, blank=True, default="register")
     delivery_date = models.DateTimeField(null=True, blank=True)
     tracking_code = models.CharField(max_length=20)
-    total_price = models.PositiveIntegerField()
+    total_price = models.PositiveIntegerField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
