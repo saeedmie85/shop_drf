@@ -98,7 +98,9 @@ class Address(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    address = models.ForeignKey(Address, on_delete=models.PROTECT)
+    address = models.ForeignKey(
+        Address, on_delete=models.PROTECT, null=True, blank=True
+    )
     status = models.CharField(max_length=50, blank=True, default="register")
     delivery_date = models.DateTimeField(null=True, blank=True)
     tracking_code = models.CharField(max_length=20)
